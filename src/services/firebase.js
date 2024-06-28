@@ -1,187 +1,210 @@
+// services/firebase.js
+
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
 
 const auth = firebase.auth();
-const db = firebase.firestore();
+const firestore = firebase.firestore();
 const storage = firebase.storage();
 
 // Authentification
 export const signInWithGoogle = async () => {
   const provider = new firebase.auth.GoogleAuthProvider();
-  await auth.signInWithPopup(provider);
-};
-
-export const signInWithApple = async () => {
-  const provider = new firebase.auth.OAuthProvider('apple.com');
-  await auth.signInWithPopup(provider);
-};
-
-export const signOut = async () => {
-  await auth.signOut();
-};
-
-// Gestion des utilisateurs
-export const createUserProfile = async (user, additionalData) => {
-  if (!user) return;
-
-  const userRef = db.collection('users').doc(user.uid);
-  const snapshot = await userRef.get();
-
-  if (!snapshot.exists) {
-    const { displayName, email, photoURL } = user;
-    const createdAt = new Date();
-
-    try {
-      await userRef.set({
-        displayName,
-        email,
-        photoURL,
-        createdAt,
-        ...additionalData
-      });
-    } catch (error) {
-      console.log('Error creating user profile', error.message);
-    }
+  try {
+    const result = await auth.signInWithPopup(provider);
+    return result.user;
+  } catch (error) {
+    console.error('Error signing in with Google:', error);
+    throw error;
   }
 };
 
-export const getUserProfile = async (userId) => {
-  const userRef = db.collection('users').doc(userId);
-  const snapshot = await userRef.get();
-  return snapshot.exists ? snapshot.data() : null;
+export const signInWithICloud = async () => {
+  // Implémenter la connexion via iCloud si nécessaire
 };
 
-export const updateUserProfile = async (userId, profileData) => {
-  const userRef = db.collection('users').doc(userId);
-  await userRef.update(profileData);
+// Déconnexion
+export const signOut = async () => {
+  try {
+    await auth.signOut();
+  } catch (error) {
+    console.error('Error signing out:', error);
+    throw error;
+  }
 };
 
-// Abonnement et désabonnement
-export const followUser = async (currentUserId, targetUserId) => {
-  const userRef = db.collection('users').doc(currentUserId);
-  await userRef.update({
-    following: firebase.firestore.FieldValue.arrayUnion(targetUserId)
-  });
-
-  const targetUserRef = db.collection('users').doc(targetUserId);
-  await targetUserRef.update({
-    followers: firebase.firestore.FieldValue.arrayUnion(currentUserId)
-  });
+// Sauvegarder les infos utilisateur dans Firestore
+export const saveUserInfo = async (user) => {
+  try {
+    await firestore.collection('users').doc(user.uid).set({
+      displayName: user.displayName,
+      email: user.email,
+      photoURL: user.photoURL,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      // Ajouter d'autres informations utilisateur si nécessaire
+    });
+  } catch (error) {
+    console.error('Error saving user info:', error);
+    throw error;
+  }
 };
 
-export const unfollowUser = async (currentUserId, targetUserId) => {
-  const userRef = db.collection('users').doc(currentUserId);
-  await userRef.update({
-    following: firebase.firestore.FieldValue.arrayRemove(targetUserId)
-  });
-
-  const targetUserRef = db.collection('users').doc(targetUserId);
-  await targetUserRef.update({
-    followers: firebase.firestore.FieldValue.arrayRemove(currentUserId)
-  });
+// Obtenir les informations utilisateur
+export const getUserInfo = async (uid) => {
+  try {
+    const userDoc = await firestore.collection('users').doc(uid).get();
+    if (userDoc.exists) {
+      return userDoc.data();
+    } else {
+      throw new Error('User not found');
+    }
+  } catch (error) {
+    console.error('Error getting user info:', error);
+    throw error;
+  }
 };
 
-// Partage de vidéos et photos
+// Upload de vidéos/photos
 export const uploadMedia = async (file, userId) => {
   const storageRef = storage.ref();
-  const fileRef = storageRef.child(`media/${userId}/${file.name}`);
-  await fileRef.put(file);
-  return await fileRef.getDownloadURL();
+  const fileRef = storageRef.child(`${userId}/${file.name}`);
+  try {
+    await fileRef.put(file);
+    const url = await fileRef.getDownloadURL();
+    return url;
+  } catch (error) {
+    console.error('Error uploading media:', error);
+    throw error;
+  }
 };
 
-export const postVideo = async (userId, videoData) => {
-  const videoRef = db.collection('videos').doc();
-  await videoRef.set({
-    userId,
-    ...videoData,
-    createdAt: new Date()
-  });
+// Publier une vidéo
+export const publishVideo = async (userId, title, description, url) => {
+  try {
+    await firestore.collection('videos').add({
+      userId,
+      title,
+      description,
+      url,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      flags: [],
+      likes: []
+    });
+  } catch (error) {
+    console.error('Error publishing video:', error);
+    throw error;
+  }
 };
 
+// Supprimer une vidéo
 export const deleteVideo = async (videoId) => {
-  const videoRef = db.collection('videos').doc(videoId);
-  await videoRef.delete();
-};
-
-export const flagVideo = async (videoId) => {
-  const videoRef = db.collection('videos').doc(videoId);
-  await videoRef.update({
-    flags: firebase.firestore.FieldValue.increment(1)
-  });
-
-  const videoDoc = await videoRef.get();
-  if (videoDoc.data().flags >= 3) {
-    await deleteVideo(videoId);
+  try {
+    await firestore.collection('videos').doc(videoId).delete();
+  } catch (error) {
+    console.error('Error deleting video:', error);
+    throw error;
   }
 };
 
-// Messagerie instantanée
-export const sendMessage = async (chatId, message) => {
-  const chatRef = db.collection('chats').doc(chatId);
-  await chatRef.collection('messages').add({
-    ...message,
-    createdAt: new Date()
-  });
+// Ajouter un commentaire
+export const addComment = async (videoId, userId, text) => {
+  try {
+    await firestore.collection('videos').doc(videoId).collection('comments').add({
+      userId,
+      text,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    throw error;
+  }
 };
 
-export const getMessages = async (chatId) => {
-  const chatRef = db.collection('chats').doc(chatId);
-  const messages = await chatRef.collection('messages').orderBy('createdAt', 'asc').get();
-  return messages.docs.map(doc => doc.data());
-};
-
-// Interactions (likes, commentaires)
+// Ajouter un like à une vidéo
 export const likeVideo = async (videoId, userId) => {
-  const videoRef = db.collection('videos').doc(videoId);
-  await videoRef.update({
-    likes: firebase.firestore.FieldValue.arrayUnion(userId)
-  });
-};
-
-export const unlikeVideo = async (videoId, userId) => {
-  const videoRef = db.collection('videos').doc(videoId);
-  await videoRef.update({
-    likes: firebase.firestore.FieldValue.arrayRemove(userId)
-  });
-};
-
-export const addComment = async (videoId, comment) => {
-  const commentsRef = db.collection('videos').doc(videoId).collection('comments');
-  await commentsRef.add({
-    ...comment,
-    createdAt: new Date()
-  });
-};
-
-export const getComments = async (videoId) => {
-  const commentsRef = db.collection('videos').doc(videoId).collection('comments');
-  const comments = await commentsRef.orderBy('createdAt', 'asc').get();
-  return comments.docs.map(doc => doc.data());
-};
-
-// Contrôle de contenu
-export const deleteComment = async (videoId, commentId) => {
-  const commentRef = db.collection('videos').doc(videoId).collection('comments').doc(commentId);
-  await commentRef.delete();
-};
-
-export const flagComment = async (videoId, commentId) => {
-  const commentRef = db.collection('videos').doc(videoId).collection('comments').doc(commentId);
-  await commentRef.update({
-    flags: firebase.firestore.FieldValue.increment(1)
-  });
-
-  const commentDoc = await commentRef.get();
-  if (commentDoc.data().flags >= 3) {
-    await deleteComment(videoId, commentId);
+  try {
+    const videoRef = firestore.collection('videos').doc(videoId);
+    await videoRef.update({
+      likes: firebase.firestore.FieldValue.arrayUnion(userId)
+    });
+  } catch (error) {
+    console.error('Error liking video:', error);
+    throw error;
   }
 };
 
-export const setEphemeralMessage = async (chatId, messageId, duration) => {
-  const messageRef = db.collection('chats').doc(chatId).collection('messages').doc(messageId);
-  setTimeout(async () => {
-    await messageRef.delete();
-  }, duration);
+// Envoyer un message
+export const sendMessage = async (senderId, receiverId, text) => {
+  try {
+    await firestore.collection('messages').add({
+      senderId,
+      receiverId,
+      text,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  } catch (error) {
+    console.error('Error sending message:', error);
+    throw error;
+  }
+};
+
+// Démarrer une session live
+export const startLiveSession = async (userId, url) => {
+  try {
+    await firestore.collection('live_sessions').add({
+      userId,
+      url,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  } catch (error) {
+    console.error('Error starting live session:', error);
+    throw error;
+  }
+};
+
+// Fonction de signalement de contenu
+export const flagContent = async (videoId, userId) => {
+  try {
+    const videoRef = firestore.collection('videos').doc(videoId);
+    await videoRef.update({
+      flags: firebase.firestore.FieldValue.arrayUnion(userId)
+    });
+  } catch (error) {
+    console.error('Error flagging content:', error);
+    throw error;
+  }
+};
+
+// Obtenir les vidéos signalées
+export const getFlaggedVideos = async () => {
+  try {
+    const snapshot = await firestore.collection('videos').where('flags', 'array-contains', 'some_value').get();
+    let flaggedVideos = [];
+    snapshot.forEach(doc => {
+      flaggedVideos.push({ id: doc.id, ...doc.data() });
+    });
+    return flaggedVideos;
+  } catch (error) {
+    console.error('Error getting flagged videos:', error);
+    throw error;
+  }
+};
+
+export default {
+  signInWithGoogle,
+  signInWithICloud,
+  signOut,
+  saveUserInfo,
+  getUserInfo,
+  uploadMedia,
+  publishVideo,
+  deleteVideo,
+  addComment,
+  likeVideo,
+  sendMessage,
+  startLiveSession,
+  flagContent,
+  getFlaggedVideos
 };
