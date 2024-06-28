@@ -1,4 +1,4 @@
-// services/firebase.js
+/* eslint-disable prettier/prettier */
 
 import firebase from 'firebase/app';
 import 'firebase/auth';
@@ -36,13 +36,13 @@ export const signOut = async () => {
 };
 
 // Sauvegarder les infos utilisateur dans Firestore
-export const saveUserInfo = async (user) => {
+export const saveUserInfo = async user => {
   try {
     await firestore.collection('users').doc(user.uid).set({
       displayName: user.displayName,
       email: user.email,
       photoURL: user.photoURL,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       // Ajouter d'autres informations utilisateur si nécessaire
     });
   } catch (error) {
@@ -52,7 +52,7 @@ export const saveUserInfo = async (user) => {
 };
 
 // Obtenir les informations utilisateur
-export const getUserInfo = async (uid) => {
+export const getUserInfo = async uid => {
   try {
     const userDoc = await firestore.collection('users').doc(uid).get();
     if (userDoc.exists) {
@@ -90,7 +90,7 @@ export const publishVideo = async (userId, title, description, url) => {
       url,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       flags: [],
-      likes: []
+      likes: [],
     });
   } catch (error) {
     console.error('Error publishing video:', error);
@@ -99,7 +99,7 @@ export const publishVideo = async (userId, title, description, url) => {
 };
 
 // Supprimer une vidéo
-export const deleteVideo = async (videoId) => {
+export const deleteVideo = async videoId => {
   try {
     await firestore.collection('videos').doc(videoId).delete();
   } catch (error) {
@@ -111,11 +111,15 @@ export const deleteVideo = async (videoId) => {
 // Ajouter un commentaire
 export const addComment = async (videoId, userId, text) => {
   try {
-    await firestore.collection('videos').doc(videoId).collection('comments').add({
-      userId,
-      text,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    await firestore
+      .collection('videos')
+      .doc(videoId)
+      .collection('comments')
+      .add({
+        userId,
+        text,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
   } catch (error) {
     console.error('Error adding comment:', error);
     throw error;
@@ -127,7 +131,7 @@ export const likeVideo = async (videoId, userId) => {
   try {
     const videoRef = firestore.collection('videos').doc(videoId);
     await videoRef.update({
-      likes: firebase.firestore.FieldValue.arrayUnion(userId)
+      likes: firebase.firestore.FieldValue.arrayUnion(userId),
     });
   } catch (error) {
     console.error('Error liking video:', error);
@@ -142,7 +146,7 @@ export const sendMessage = async (senderId, receiverId, text) => {
       senderId,
       receiverId,
       text,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     });
   } catch (error) {
     console.error('Error sending message:', error);
@@ -156,7 +160,7 @@ export const startLiveSession = async (userId, url) => {
     await firestore.collection('live_sessions').add({
       userId,
       url,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     });
   } catch (error) {
     console.error('Error starting live session:', error);
@@ -169,7 +173,7 @@ export const flagContent = async (videoId, userId) => {
   try {
     const videoRef = firestore.collection('videos').doc(videoId);
     await videoRef.update({
-      flags: firebase.firestore.FieldValue.arrayUnion(userId)
+      flags: firebase.firestore.FieldValue.arrayUnion(userId),
     });
   } catch (error) {
     console.error('Error flagging content:', error);
@@ -180,10 +184,13 @@ export const flagContent = async (videoId, userId) => {
 // Obtenir les vidéos signalées
 export const getFlaggedVideos = async () => {
   try {
-    const snapshot = await firestore.collection('videos').where('flags', 'array-contains', 'some_value').get();
+    const snapshot = await firestore
+      .collection('videos')
+      .where('flags', 'array-contains', 'some_value')
+      .get();
     let flaggedVideos = [];
     snapshot.forEach(doc => {
-      flaggedVideos.push({ id: doc.id, ...doc.data() });
+      flaggedVideos.push({id: doc.id, ...doc.data()});
     });
     return flaggedVideos;
   } catch (error) {
@@ -206,5 +213,5 @@ export default {
   sendMessage,
   startLiveSession,
   flagContent,
-  getFlaggedVideos
+  getFlaggedVideos,
 };
