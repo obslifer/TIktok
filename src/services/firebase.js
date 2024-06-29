@@ -87,7 +87,7 @@ export const signOut = async () => {
 // Sauvegarder les infos utilisateur dans Firestore
 export const saveUserInfo = async (userId, profileData) => {
   try {
-    await firestore.collection('users').doc(userId).set(profileData);
+    await firestore().collection('users').doc(userId).set(profileData);
   } catch (error) {
     console.error('Error saving user info:', error);
     throw error;

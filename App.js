@@ -52,7 +52,6 @@ const App = () => {
         {user ? (
           profileExists ? (
             <>
-              <Stack.Screen name="ProfilCreation" component={ProfileCreationScreen} />
               <Stack.Screen name="VideoList" component={VideoList} />
               <Stack.Screen name="imagePicker" component={imagePickerStructure} />
               <Stack.Screen name="Home" component={HomeScreen} />

@@ -4,7 +4,7 @@
 import React, {useState} from 'react';
 import {View, Text, TextInput, Button, StyleSheet} from 'react-native';
 import firebase from '@react-native-firebase/app';
-import firestore from '@react-native-firebase/firestore';
+import firestore, { Timestamp, serverTimestamp  } from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import {saveUserInfo} from '../services/firebase';
 
@@ -24,8 +24,8 @@ const ProfileCreationScreen = ({navigation}) => {
         displayName,
         email: user.email,
         photoURL: user.photoURL,
-        createdAt: firestore().FieldValue.serverTimestamp(),
-        dateOfBirth: firestore().Timestamp.fromDate(
+        createdAt: serverTimestamp(),
+        dateOfBirth: Timestamp.fromDate(
           new Date(dateOfBirth),
         ),
         country,
