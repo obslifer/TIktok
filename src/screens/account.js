@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Text, Image, View, StyleSheet } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {SafeAreaView, Text, Image, View, StyleSheet} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
-const Account = ({ route }) => {
-  const { userId } = route.params;
+const Account = ({route}) => {
+  const {userId} = route.params;
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const Account = ({ route }) => {
       <View style={styles.header}>
         <Text style={styles.displayName}>{userData.displayName}</Text>
       </View>
-      <Image source={{ uri: userData.photoURL }} style={styles.photo} />
+      <Image source={{uri: userData.photoURL}} style={styles.photo} />
       <Text style={styles.username}>@{userData.email.split('@')[0]}</Text>
       <View style={styles.followContainer}>
         <View style={styles.followBox}>

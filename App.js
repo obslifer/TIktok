@@ -13,6 +13,8 @@ import HomeScreen from './src/screens/HomeScreen';
 import ProfileCreationScreen from './src/screens/ProfileCreationScreen';
 import VideoList from './src/screens/VideoList';
 import imagePickerStructure from './src/screens/imagePickerStructure';
+import Account from './src/screens/account';
+import Camera from './src/screens/Camera/index'; 
 import { doesUserProfileExist } from './src/services/firebase';
 
 
@@ -53,7 +55,9 @@ const App = () => {
           profileExists ? (
             <>
               <Stack.Screen name="VideoList" component={VideoList} />
-              <Stack.Screen name="imagePicker" component={imagePickerStructure} />
+              <Stack.Screen name="Camera" component={Camera} />
+              <Stack.Screen name="Account" component={VideoList} />
+              <Stack.Screen name="imagePicker" component={Account} />
               <Stack.Screen name="Home" component={HomeScreen} />
             </>
             ) : (
