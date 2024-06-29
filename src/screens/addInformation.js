@@ -57,6 +57,7 @@ const AddInformation = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Button title="Go to Account" onPress={() => navigation.navigate('Account', { userId: "5aZG55aGxo58zgkUW7HB" })} />
+        <Button title="Go to Comments" onPress={() => navigation.navigate('Comments', { videoId: 'QcBlEQUF96FDgoKypGBi' })} />
 
         <Text style={styles.label}>Name</Text>
         <TextInput value={displayName} onChangeText={setDisplayName} style={styles.input} />
