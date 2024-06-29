@@ -24,8 +24,8 @@ const ProfileCreationScreen = ({navigation}) => {
         displayName,
         email: user.email,
         photoURL: user.photoURL,
-        createdAt: firestore.FieldValue.serverTimestamp(),
-        dateOfBirth: firestore.Timestamp.fromDate(
+        createdAt: firestore().FieldValue.serverTimestamp(),
+        dateOfBirth: firestore().Timestamp.fromDate(
           new Date(dateOfBirth),
         ),
         country,

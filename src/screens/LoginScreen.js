@@ -28,7 +28,7 @@ const LoginScreen = ({navigation}) => {
   const handleLogin = async () => {
     try {
       await auth().signInWithEmailAndPassword(email, password);
-      navigation.navigate('Home');
+      navigation.navigate('VideoList');
     } catch (error) {
       console.error(error);
     }
@@ -47,7 +47,7 @@ const LoginScreen = ({navigation}) => {
         userInfo.idToken,
       );
       await auth().signInWithCredential(googleCredential);
-      navigation.navigate('Home');
+      navigation.navigate('VideoList');
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log('User cancelled the login flow');

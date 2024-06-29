@@ -242,11 +242,23 @@ export const getFlaggedVideos = async () => {
   }
 };
 
+// Vérifier si le profil de l'utilisateur existe
+export const doesUserProfileExist = async (userId) => {
+  try {
+    const doc = await firestore().collection('users').doc(userId).get();
+    return doc.exists;
+  } catch (error) {
+    console.error('Error checking user profile existence:', error);
+    throw error;
+  }
+};
+
 export default {
   firebase,
   firestore,
   auth,
   storage,
+  doesUserProfileExist,
   signInWithGoogle,
   signInWithICloud,
   signInWithEmailPassword,
