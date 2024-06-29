@@ -1,16 +1,10 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable react/react-in-jsx-scope */
-/* eslint-disable prettier/prettier */
-import {Provider} from 'react-redux';
-import store from './src/store';
-import AppNavigator from './src/navigation/AppNavigator';
+// App.js
+import React from 'react';
+import AppNavigator from './navigation/navigation';
 
 const App = () => {
-  return (
-    <Provider store={store}>
-      <AppNavigator />
-    </Provider>
-  );
+  return <AppNavigator />;
 };
 
 export default App;
