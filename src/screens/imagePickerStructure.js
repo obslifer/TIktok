@@ -15,9 +15,9 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-const userid = auth().currentUser.uid;
 
 export default function App() {
+  const userid = auth().currentUser.uid;
   const [mediaUri, setMediaUri] = useState(null);
   const [mediaType, setMediaType] = useState(null);
   const [trimmedVideoUri, setTrimmedVideoUri] = useState(null);

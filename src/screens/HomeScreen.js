@@ -3,7 +3,7 @@
 import React, {useState} from 'react';
 import {View, Text, TextInput, Button, StyleSheet} from 'react-native';
 import {signUpWithEmailPassword, signUpWithPhone, sendVerificationCode} from '../services/firebase';
-import {auth} from '../services/firebase';
+import auth from '@react-native-firebase/auth';
 
 const HomeScreen = ({navigation}) => {
     const userid = auth().currentUser.uid;

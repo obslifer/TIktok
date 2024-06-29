@@ -35,14 +35,6 @@ const App = () => {
     return () => unsubscribe();
   }, []);
 
-  if (loading) {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
   return (
     <NavigationContainer>
       <Stack.Navigator>

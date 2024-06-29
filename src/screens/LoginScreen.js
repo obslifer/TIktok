@@ -20,7 +20,7 @@ const LoginScreen = ({navigation}) => {
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:
-        '307643354852-kkmqjtaij7mji534te6ccj9blofb9rij.apps.googleusercontent.com',
+        '995307560873-s8lkk955joihu7fvtmr467uan93blbuu.apps.googleusercontent.com',
     });
   }, []);
 
@@ -38,6 +38,10 @@ const LoginScreen = ({navigation}) => {
   const handleGoogleSignIn = async () => {
     try {
       await GoogleSignin.hasPlayServices();
+      GoogleSignin.configure({
+        webClientId:
+          '995307560873-s8lkk955joihu7fvtmr467uan93blbuu.apps.googleusercontent.com',
+      });
       const userInfo = await GoogleSignin.signIn();
       const googleCredential = auth.GoogleAuthProvider.credential(
         userInfo.idToken,
