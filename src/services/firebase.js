@@ -1,28 +1,11 @@
 /* eslint-disable prettier/prettier */
 
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/firestore';
-import 'firebase/storage';
+import firebase from '@react-native-firebase/app';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import storage from '@react-native-firebase/storage';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
-// Configuration Firebase
-const firebaseConfig = {
-    apiKey: 'AIzaSyAsS_ZYNmeB4g8XILDzBFBmmnpfXWqYGW0',
-    authDomain: 'tiktokclone-b88c1.firebaseapp.com',
-    projectId: 'tiktokclone-b88c1',
-    storageBucket: 'https://console.firebase.google.com/u/0/project/tiktokclone-b88c1/storage/tiktokclone-b88c1.appspot.com/files',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-    appId: '1:995307560873:android:6bd1c784d4dbe25645eeb8'
-  };
-  
-  // Initialisation Firebase
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
-
-const auth = firebase.auth();
-const firestore = firebase.firestore();
-const storage = firebase.storage();
 
 // Authentification
 export const signInWithGoogle = async () => {
@@ -57,7 +40,7 @@ export const signInWithEmailPassword = async (email, password) => {
   };
   
   export const sendVerificationCode = async (phone) => {
-    const verifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
+    const verifier = new auth.RecaptchaVerifier('recaptcha-container');
     try {
       const confirmationResult = await auth.signInWithPhoneNumber(phone, verifier);
       window.confirmationResult = confirmationResult;
@@ -102,15 +85,9 @@ export const signOut = async () => {
 };
 
 // Sauvegarder les infos utilisateur dans Firestore
-export const saveUserInfo = async user => {
+export const saveUserInfo = async (userId, profileData) => {
   try {
-    await firestore.collection('users').doc(user.uid).set({
-      displayName: user.displayName,
-      email: user.email,
-      photoURL: user.photoURL,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      // Ajouter d'autres informations utilisateur si nécessaire
-    });
+    await firestore.collection('users').doc(userId).set(profileData);
   } catch (error) {
     console.error('Error saving user info:', error);
     throw error;
@@ -266,6 +243,10 @@ export const getFlaggedVideos = async () => {
 };
 
 export default {
+  firebase,
+  firestore,
+  auth,
+  storage,
   signInWithGoogle,
   signInWithICloud,
   signInWithEmailPassword,

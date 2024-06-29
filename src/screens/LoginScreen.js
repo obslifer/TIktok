@@ -1,57 +1,66 @@
 /* eslint-disable prettier/prettier */
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+} from 'react-native';
+import auth from '@react-native-firebase/auth';
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 
-// pages/LoginScreen.js
-
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import { signInWithGoogle, signInWithEmailPassword, signInWithPhone, sendVerificationCode } from '../services/firebase';
-
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [phone, setPhone] = useState('');
-  const [verificationCode, setVerificationCode] = useState('');
 
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        '307643354852-kkmqjtaij7mji534te6ccj9blofb9rij.apps.googleusercontent.com',
+    });
+  }, []);
+
+  //connexion via email et password
+  const handleLogin = async () => {
+    try {
+      await auth().signInWithEmailAndPassword(email, password);
+      navigation.navigate('Home');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  //connexion via google
   const handleGoogleSignIn = async () => {
     try {
-      await signInWithGoogle();
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(
+        userInfo.idToken,
+      );
+      await auth().signInWithCredential(googleCredential);
       navigation.navigate('Home');
     } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleEmailPasswordSignIn = async () => {
-    try {
-      await signInWithEmailPassword(email, password);
-      navigation.navigate('Home');
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handlePhoneSignIn = async () => {
-    try {
-      if (verificationCode) {
-        await signInWithPhone(phone, verificationCode);
-        navigation.navigate('Home');
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        console.log('User cancelled the login flow');
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        console.log('Sign in is in progress already');
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        console.log('Play services not available or outdated');
       } else {
-        // Envoyer le code de vérification
-        await sendVerificationCode(phone);
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
     }
   };
 
+  //interface
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Connexion</Text>
-
-      <Button title="Se connecter avec Google" onPress={handleGoogleSignIn} />
-
-      <Text style={styles.or}>OU</Text>
-
+      <Text style={styles.title}>Connectez-vous!</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -60,56 +69,65 @@ const LoginScreen = ({ navigation }) => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Mot de passe"
-        secureTextEntry
+        placeholder="Password"
         value={password}
         onChangeText={setPassword}
+        secureTextEntry
       />
-      <Button title="Se connecter avec Email" onPress={handleEmailPasswordSignIn} />
-
-      <Text style={styles.or}>OU</Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Numéro de téléphone"
-        value={phone}
-        onChangeText={setPhone}
-      />
-      {verificationCode ? (
-        <TextInput
-          style={styles.input}
-          placeholder="Code de vérification"
-          value={verificationCode}
-          onChangeText={setVerificationCode}
-        />
-      ) : null}
-      <Button title="Se connecter avec Téléphone" onPress={handlePhoneSignIn} />
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Signup')}>
+        <Text style={styles.buttonText}>Sign Up</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.googleButton}
+        onPress={handleGoogleSignIn}>
+        <Text style={styles.buttonText}>Sign in with Google</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
+//style
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20
+    padding: 16,
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 24,
-    marginBottom: 20,
-    textAlign: 'center'
+    marginBottom: 24,
+    textAlign: 'center',
   },
   input: {
     height: 40,
     borderColor: '#ccc',
     borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10
+    marginBottom: 12,
+    paddingHorizontal: 8,
   },
-  or: {
+  button: {
+    backgroundColor: '#007bff',
+    paddingVertical: 12,
+    borderRadius: 6,
+    marginBottom: 12,
+  },
+  googleButton: {
+    backgroundColor: '#db4437',
+    paddingVertical: 12,
+    borderRadius: 6,
+    marginBottom: 12,
+  },
+  buttonText: {
+    color: '#fff',
     textAlign: 'center',
-    marginVertical: 10
-  }
+    fontWeight: 'bold',
+  },
 });
 
 export default LoginScreen;
