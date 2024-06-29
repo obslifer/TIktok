@@ -4,6 +4,7 @@
 import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {View, ActivityIndicator} from 'react-native';
 import auth from '@react-native-firebase/auth';
 
@@ -19,8 +20,19 @@ import AddInformation from './src/screens/addInformation';
 import Comments from './src/screens/comments'; 
 import { doesUserProfileExist } from './src/services/firebase';
 
-
 const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+const AppTabs = () => {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Videos" component={VideoList} />
+      <Tab.Screen name="Camera" component={Camera} />
+      <Tab.Screen name="Account" component={Account} />
+    </Tab.Navigator>
+  );
+};
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -55,18 +67,10 @@ const App = () => {
       <Stack.Navigator>
         {user ? (
           profileExists ? (
-            <>
-              <Stack.Screen name="VideoList" component={VideoList} />
-              <Stack.Screen name="Camera" component={Camera} />
-              <Stack.Screen name="AddInformation" component={AddInformation} />
-              <Stack.Screen name="Comments" component={Comments} />
-              <Stack.Screen name="Account" component={Account} />
-              <Stack.Screen name="ImagePicker" component={imagePickerStructure} />
-              <Stack.Screen name="Home" component={HomeScreen} />
-            </>
-            ) : (
-              <Stack.Screen name="ProfileCreation" component={ProfileCreationScreen} />
-            )
+            <Stack.Screen name="AppTabs" component={AppTabs} options={{ headerShown: false }} />
+          ) : (
+            <Stack.Screen name="ProfileCreation" component={ProfileCreationScreen} />
+          )
         ) : (
           <>
             <Stack.Screen name="Login" component={LoginScreen} />

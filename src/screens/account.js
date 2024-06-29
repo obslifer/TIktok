@@ -4,7 +4,7 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
 const Account = ({route}) => {
-  const {userId} = route.params;
+  const userId = auth().currentUser.uid;
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
