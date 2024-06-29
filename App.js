@@ -15,6 +15,8 @@ import VideoList from './src/screens/VideoList';
 import imagePickerStructure from './src/screens/imagePickerStructure';
 import Account from './src/screens/account';
 import Camera from './src/screens/Camera/index'; 
+import AddInformation from './src/screens/addInformation';
+import Comments from './src/screens/comments'; 
 import { doesUserProfileExist } from './src/services/firebase';
 
 
@@ -56,8 +58,11 @@ const App = () => {
             <>
               <Stack.Screen name="VideoList" component={VideoList} />
               <Stack.Screen name="Camera" component={Camera} />
+              <Stack.Screen name="AddInformation" component={AddInformation} />
+              <Stack.Screen name="Comments" component={Comments} />
               <Stack.Screen name="Account" component={VideoList} />
-              <Stack.Screen name="imagePicker" component={Account} />
+              <Stack.Screen name="ImagePicker" component={Account} />
+              <Stack.Screen name="ImagePicker" component={imagePickerStructure} />
               <Stack.Screen name="Home" component={HomeScreen} />
             </>
             ) : (
