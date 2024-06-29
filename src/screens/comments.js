@@ -55,7 +55,7 @@ const Comments = ({ route }) => {
           <View style={styles.commentContainer}>
             <Text style={styles.commentUser}>{item.userId}</Text>
             <Text style={styles.commentText}>{item.text}</Text>
-            {/* <Text style={styles.commentDate}>{new Date(item.createdAt.seconds * 1000).toLocaleString()}</Text> */}
+            <Text style={styles.commentDate}>{new Date(item.createdAt.seconds * 1000).toLocaleString()}</Text>
           </View>
         )}
       />
