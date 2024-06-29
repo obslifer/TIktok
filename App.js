@@ -60,8 +60,7 @@ const App = () => {
               <Stack.Screen name="Camera" component={Camera} />
               <Stack.Screen name="AddInformation" component={AddInformation} />
               <Stack.Screen name="Comments" component={Comments} />
-              <Stack.Screen name="Account" component={VideoList} />
-              <Stack.Screen name="ImagePicker" component={Account} />
+              <Stack.Screen name="Account" component={Account} />
               <Stack.Screen name="ImagePicker" component={imagePickerStructure} />
               <Stack.Screen name="Home" component={HomeScreen} />
             </>
