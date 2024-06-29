@@ -3,6 +3,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
+/*
 import React from 'react';
 import { View, Button, Alert } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
@@ -59,3 +60,4 @@ const LiveStreamingScreen = () => {
 };
 
 export default LiveStreamingScreen;
+*/

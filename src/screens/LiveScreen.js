@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 // LiveStreamingScreen.js
-
+/*
 import React, { useRef, useState } from 'react';
 import { View, Button, Alert, StyleSheet } from 'react-native';
 import { RNCamera } from 'react-native-camera';
@@ -107,3 +107,4 @@ const styles = StyleSheet.create({
 });
 
 export default LiveStreamingScreen;
+*/
