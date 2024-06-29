@@ -14,6 +14,7 @@ import { isValidVideo, showEditor } from 'react-native-video-trim';
 import { launchImageLibrary } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
+import VideoList from './src/screens/VideoList';
 
 export default function App() {
   const [mediaUri, setMediaUri] = useState(null);
@@ -131,43 +132,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      {trimmedVideoUri && mediaType === 'video' ? (
-        <Video source={{ uri: trimmedVideoUri }} style={styles.video} controls />
-      ) : (
-        mediaUri && mediaType === 'video' && (
-          <Video source={{ uri: mediaUri }} style={styles.video} controls />
-        )
-      )}
-      {mediaUri && mediaType === 'photo' && (
-        <Image source={{ uri: mediaUri }} style={styles.image} />
-      )}
-      <TouchableOpacity onPress={openLibrary} style={styles.button}>
-        <Text>Ouvrir la bibliothèque</Text>
-      </TouchableOpacity>
-
-      {/* Title and Description TextInputs */}
-      <TextInput
-        placeholder="Titre"
-        style={styles.input}
-        onChangeText={setTitle}
-        value={title}
-      />
-      <TextInput
-        placeholder="Description"
-        style={styles.input}
-        onChangeText={setDescription}
-        value={description}
-        multiline={true}
-        numberOfLines={4}
-      />
-
-      <TouchableOpacity
-        onPress={SaveIntoFirebase}
-        style={[styles.button, !canPublish && { opacity: 0.5 }]} // Disable button if canPublish is false
-        disabled={!canPublish} // Disable button if canPublish is false
-      >
-        <Text>Publier</Text>
-      </TouchableOpacity>
+      <VideoList/>
     </View>
   );
 }

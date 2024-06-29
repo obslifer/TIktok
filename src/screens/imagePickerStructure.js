@@ -14,8 +14,10 @@ import { isValidVideo, showEditor } from 'react-native-video-trim';
 import { launchImageLibrary } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
+import {auth} from '../services/firebase';
+const userid = auth().currentUser.uid;
 
-export default function ImagePickerStructure() {
+export default function App() {
   const [mediaUri, setMediaUri] = useState(null);
   const [mediaType, setMediaType] = useState(null);
   const [trimmedVideoUri, setTrimmedVideoUri] = useState(null);
@@ -109,7 +111,7 @@ export default function ImagePickerStructure() {
 
       // Construct video object to save in Firestore
       const videoData = {
-        userId: 'userId_here', // Replace with actual user ID
+        userId: userid, // Replace with actual user ID
         title: title,
         url: url,
         description: description,
