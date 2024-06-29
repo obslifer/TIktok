@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // services/firebase.js
 
 import firebase from 'firebase/app';
