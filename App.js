@@ -7,6 +7,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {View, ActivityIndicator} from 'react-native';
 import auth from '@react-native-firebase/auth';
+import Icon from 'react-native-vector-icons';
 
 import LoginScreen from './src/screens/LoginScreen';
 import SignupScreen from './src/screens/SignupScreen';
@@ -25,9 +26,10 @@ const Tab = createBottomTabNavigator();
 
 const AppTabs = () => {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Home" component={HomeScreen} />
+    <Tab.Navigator
+    >
       <Tab.Screen name="Videos" component={VideoList} />
+      <Tab.Screen name="imagePickerStructure" component={imagePickerStructure} />
       <Tab.Screen name="Camera" component={Camera} />
       <Tab.Screen name="Account" component={Account} />
     </Tab.Navigator>
@@ -67,9 +69,15 @@ const App = () => {
       <Stack.Navigator>
         {user ? (
           profileExists ? (
-            <Stack.Screen name="AppTabs" component={AppTabs} options={{ headerShown: false }} />
+            <>
+              <Stack.Screen name="AppTabs" component={AppTabs} options={{ headerShown: false }} />
+              <Stack.Screen name="comments" component={Comments} />
+              <Stack.Screen name="account" component={Account} />
+              <Stack.Screen name="addInformation" component={AddInformation} />
+              <Stack.Screen name="Videos" component={VideoList} />
+            </>
           ) : (
-            <Stack.Screen name="ProfileCreation" component={ProfileCreationScreen} />
+            <Stack.Screen name="addInformation" component={AddInformation} />
           )
         ) : (
           <>

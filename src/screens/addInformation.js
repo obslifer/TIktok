@@ -55,6 +55,7 @@ const AddInformation = ({navigation}) => {
           following: [],
         });
       alert('User information saved successfully!');
+      navigation.navigate('Videos');
     } catch (error) {
       console.error('Error saving user information: ', error);
       alert('Failed to save user information');
@@ -64,18 +65,18 @@ const AddInformation = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Button
+        {/* <Button
           title="Go to Account"
           onPress={() =>
             navigation.navigate('Account', {userId: '5aZG55aGxo58zgkUW7HB'})
           }
-        />
-        <Button
+        /> */}
+        {/* <Button
           title="Go to Comments"
           onPress={() =>
             navigation.navigate('Comments', {videoId: 'QcBlEQUF96FDgoKypGBi'})
           }
-        />
+        /> */}
 
         <Text style={styles.label}>Name</Text>
         <TextInput

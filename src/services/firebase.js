@@ -182,6 +182,20 @@ export const likeVideo = async (videoId, userId) => {
   }
 };
 
+// enlever un like à une vidéo
+export const unlikeVideo = async (videoId, userId) => {
+  try {
+    const videoRef = firestore().collection('videos').doc(videoId);
+    await videoRef.update({
+      likes: firebase.firestore.FieldValue.arrayRemove(userId),
+    });
+  } catch (error) {
+    console.error('Error unliking video:', error);
+    throw error;
+  }
+};
+
+
 // Envoyer un message
 export const sendMessage = async (senderId, receiverId, text) => {
   try {

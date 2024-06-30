@@ -2,8 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {SafeAreaView, Text, Image, View, StyleSheet} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import {useNavigation} from '@react-navigation/native';
 
-const Account = ({route}) => {
+const Account = ({navigation}) => {
   const userId = auth().currentUser.uid;
   const [userData, setUserData] = useState(null);
 
